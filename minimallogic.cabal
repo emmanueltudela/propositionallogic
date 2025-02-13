@@ -3,7 +3,7 @@ name:               minimallogic
 version:            0.1.0.0
 
 -- A short (one-line) description of the package.
--- synopsis:
+synopsis: A simple minimal logic system implementation in Haskell.
 
 -- A longer description of the package.
 -- description:
@@ -22,6 +22,12 @@ maintainer:         emmanueltudela.pro@gmail.com
 extra-source-files:
     CHANGELOG.md
     README.md
+
+library
+    hs-source-dirs:   lib
+    default-language: Haskell2010
+    -- exposed-modules:  MinimalLogic
+    -- other-modules:
 
 executable minimallogic
     main-is:          Main.hs
