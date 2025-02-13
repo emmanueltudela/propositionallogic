@@ -26,7 +26,9 @@ extra-source-files:
 library
     build-depends:    base ^>=4.16.4.0
 
-    -- exposed-modules:
+    exposed-modules:  PropositionalLogic.Operators
+                      PropositionalLogic.Variables
+                      PropositionalLogic.Formulas
 
     build-depends:    base ^>=4.16.4.0
     hs-source-dirs:   src
@@ -37,7 +39,9 @@ executable propositionallogic
     main-is:          Main.hs
 
     -- Modules included in this executable, other than Main.
-    -- other-modules:
+    other-modules:    PropositionalLogic.Operators
+                      PropositionalLogic.Variables
+                      PropositionalLogic.Formulas
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
