@@ -1,4 +1,4 @@
-# Revision history for minimallogic
+# Revision history for propositionallogic
 
 ## 0.1.0.0 -- YYYY-mm-dd
 
