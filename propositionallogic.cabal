@@ -29,6 +29,7 @@ library
     exposed-modules:  PropositionalLogic.Operators
                       PropositionalLogic.Variables
                       PropositionalLogic.Formulas
+                      PropositionalLogic.Sequents
 
     build-depends:    base ^>=4.16.4.0
     hs-source-dirs:   src
@@ -42,6 +43,7 @@ executable propositionallogic
     other-modules:    PropositionalLogic.Operators
                       PropositionalLogic.Variables
                       PropositionalLogic.Formulas
+                      PropositionalLogic.Sequents
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:

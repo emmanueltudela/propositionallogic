@@ -1,5 +1,0 @@
-module PropositionalLogic.Parenthesis
-(
-) where
-
-
