@@ -38,3 +38,5 @@ stringOfFormula f =
                   let stringF1 = parenthesisFormulaLeft op f1 (stringOfFormula f1)
                       stringF2 = parenthesisFormulaRight op f2 (stringOfFormula f2)
                   in stringF1 ++ (stringOfOperator op) ++ stringF2
+
+
