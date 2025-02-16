@@ -5,7 +5,6 @@ module PropositionalLogic.Operators
 , isUnary
 , operatorBeginningString
 , stringWithoutBeginningOperator
-, stringBeginsWithOperator
 ) where
 
 {-# LANGUAGE OverloadedStrings #-}
@@ -37,6 +36,9 @@ operatorOfString str =
 
 operatorBeginningString :: String -> Maybe Operator
 operatorBeginningString str
+    {- Returns the Operator matching the beginning of the string or
+     - Nothing if there is not operator at the beginning.
+     -}
     | stringBeginsWithOperator str Eq = Just Eq
     | stringBeginsWithOperator str Impl = Just Impl
     | stringBeginsWithOperator str Or = Just Or
@@ -46,11 +48,15 @@ operatorBeginningString str
 
 stringWithoutBeginningOperator :: String -> String
 stringWithoutBeginningOperator str =
+    {- Returns the string without the beginning operator if there is any
+     -}
     let begOp = operatorBeginningString str
     in case begOp of Nothing -> str
                      Just op -> drop (length (stringOfOperator op)) str
 
 stringBeginsWithOperator :: String -> Operator -> Bool
 stringBeginsWithOperator str op =
+    {- Returns wether or not the string begins with the given operator
+     -}
     let opStr = stringOfOperator op
     in isPrefixOf opStr str

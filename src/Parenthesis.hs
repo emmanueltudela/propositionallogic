@@ -15,9 +15,13 @@ isValidParenthesing str =
             | otherwise = aux cmpt t
     in aux 0 str
 
-isolateToExcessParenthesis :: String -> String
-isolateToExcessParenthesis "" = ""
-isolateToExcessParenthesis str =
+isolateToExcessClosingParenthesis :: String -> String
+isolateToExcessClosingParenthesis "" = ""
+isolateToExcessClosingParenthesis str =
+    {- Returns the string up to the first excess closing parenthesis
+     - (Up to the first closing parenthesis that doesn't match with
+     - any opening parenthesis)
+     -}
     let aux cmpt acc "" = acc
         aux cmpt acc (c:t) =
             case c of '(' -> aux (cmpt + 1) (c:acc) t
@@ -31,9 +35,18 @@ isolateToExcessParenthesis str =
 removeOuterParenthesis :: String -> String
 removeOuterParenthesis "" = ""
 removeOuterParenthesis (c:t)
+    {- Remove the first parenthesis then isolate the string to the first
+     - excess closing parenthesis. If the string only lose 1 char then
+     - the excess parenthesis was at the end of the string. It implies
+     - that we removed outer parenthesis. If the string lose more than 1
+     - char then the parenthesis wasn't surrounding the whole expression
+     - and there was no surrounding parenthesing.
+     -
+     - Parenthesing must be valid.
+     -}
     | c /= '(' = c:t
     | otherwise =
-        let remainingValidParenthesing = isolateToExcessParenthesis t
+        let remainingValidParenthesing = isolateToExcessClosingParenthesis t
         in if (length remainingValidParenthesing) == (length t) - 1 then
                removeOuterParenthesis remainingValidParenthesing
            else

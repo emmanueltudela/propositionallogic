@@ -1,7 +1,7 @@
 module PropositionalLogic.Formulas
 ( Formula(..)
 , stringOfFormula
-, splittedOnMainOperator
+, splittedOnRootOperator
 ) where
 
 {-# LANGUAGE OverloadedStrings #-}
@@ -46,9 +46,14 @@ stringOfFormula f =
                       stringF2 = parenthesisFormulaRight op f2 (stringOfFormula f2)
                   in stringF1 ++ (stringOfOperator op) ++ stringF2
 
-minimumMainOperator :: String -> Operator
-minimumMainOperator str =
-    let aux acc "" = acc
+rootOperator :: String -> Operator
+rootOperator str =
+    {- Returns the root operator of the given formula.
+     -
+     - str must represent a valid Formula
+     -}
+    let strMp = removeOuterParenthesis str
+        aux acc "" = acc
         aux acc str@(c:t) =
             case (operatorBeginningString str) of
                  Nothing -> aux acc t
@@ -57,12 +62,16 @@ minimumMainOperator str =
                          aux op t
                      else
                          aux acc t
-    in aux (maxBound :: Operator) str
+    in aux (maxBound :: Operator) strMp
 
-splittedOnMainOperator :: String -> Maybe [String]
-splittedOnMainOperator str =
+splittedOnRootOperator :: String -> Maybe [String]
+splittedOnRootOperator str =
+    {- Returns the left and right formula around the root operator
+     -
+     - str must represent a valid Formula
+     -}
     let strMp = removeOuterParenthesis str
-        minOp = minimumMainOperator str
+        rootOp = rootOperator str
         aux acc _ "" = Nothing
         aux acc inParenthesis currentStr@(c:t)
             | c == '(' = aux (c:acc) (inParenthesis + 1) t
@@ -71,15 +80,7 @@ splittedOnMainOperator str =
                 if inParenthesis > 0 then
                     aux (c:acc) inParenthesis t
                 else
-                    if stringBeginsWithOperator currentStr minOp then
-                        Just [reverse acc, stringWithoutBeginningOperator currentStr]
-                    else
-                        aux (c:acc) inParenthesis t
+                    case (operatorBeginningString currentStr) of
+                        Just rootOp -> Just [reverse acc, stringWithoutBeginningOperator currentStr]
+                        _ -> aux (c:acc) inParenthesis t
     in aux "" 0 str
-
--- formulaOfString :: String -> Maybe Formula
--- formulaOfString "" = Nothing
--- formulaOfString str = Nothing
---     let aux _ _ "" = Nothing
---         aux form currentOp str =
---             case str of '(':t ->
