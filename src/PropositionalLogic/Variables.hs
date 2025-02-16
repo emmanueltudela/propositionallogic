@@ -21,7 +21,7 @@ isSpecialVariableString str = str == (stringOfSpecialVariable Bot)
 
 stringOfSpecialVariable :: SpecialVariable -> String
 stringOfSpecialVariable sv =
-    case sv of Bot -> "!"
+    case sv of Bot -> "False"
 
 beginsWithSpecialVariable :: String -> SpecialVariable -> Bool
 beginsWithSpecialVariable str sv =
@@ -39,5 +39,5 @@ containsSpecialVariable str =
 
 specialVariableOfString :: String -> Maybe SpecialVariable
 specialVariableOfString str
-    | str == "!" = Just Bot
+    | str == "False" = Just Bot
     | otherwise = Nothing

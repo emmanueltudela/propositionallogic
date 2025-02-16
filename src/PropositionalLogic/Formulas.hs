@@ -9,16 +9,9 @@ module PropositionalLogic.Formulas
 import PropositionalLogic.Variables
 import PropositionalLogic.Operators
 import Parenthesis
+import Auxiliary
 
 -- import Debug.Trace (trace)
-
-strip :: String -> String
-strip str =
-    reverse $ removeStartingSpaces (reverse $ removeStartingSpaces str)
-    where removeStartingSpaces "" = ""
-          removeStartingSpaces (c:t)
-              | c == ' ' = removeStartingSpaces t
-              | otherwise = c:t
 
 data Formula = BinaryForm Formula Operator Formula | UnaryForm Operator Formula | Var Variable | Symb SpecialVariable deriving (Show)
 
