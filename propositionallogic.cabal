@@ -30,6 +30,7 @@ library
                       PropositionalLogic.Variables
                       PropositionalLogic.Formulas
                       PropositionalLogic.Sequents
+                      Parenthesis
 
     build-depends:    base ^>=4.16.4.0
     hs-source-dirs:   src
@@ -44,6 +45,7 @@ executable propositionallogic
                       PropositionalLogic.Variables
                       PropositionalLogic.Formulas
                       PropositionalLogic.Sequents
+                      Parenthesis
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:

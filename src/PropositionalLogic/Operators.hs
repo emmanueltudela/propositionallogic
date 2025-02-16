@@ -3,9 +3,16 @@ module PropositionalLogic.Operators
 , stringOfOperator
 , operatorOfString
 , isUnary
+, operatorBeginningString
+, stringWithoutBeginningOperator
+, stringBeginsWithOperator
 ) where
 
-data Operator = Eq | Impl | Or | And | Not deriving (Ord, Eq)
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.List
+
+data Operator = Eq | Impl | Or | And | Not deriving (Ord, Eq, Bounded, Show)
 
 isUnary :: Operator -> Bool
 isUnary op =
@@ -27,3 +34,23 @@ operatorOfString str =
                 "\\/" -> Or
                 "->" -> Impl
                 "<->" -> Eq
+
+operatorBeginningString :: String -> Maybe Operator
+operatorBeginningString str
+    | stringBeginsWithOperator str Eq = Just Eq
+    | stringBeginsWithOperator str Impl = Just Impl
+    | stringBeginsWithOperator str Or = Just Or
+    | stringBeginsWithOperator str And = Just And
+    | stringBeginsWithOperator str Not = Just Not
+    | otherwise = Nothing
+
+stringWithoutBeginningOperator :: String -> String
+stringWithoutBeginningOperator str =
+    let begOp = operatorBeginningString str
+    in case begOp of Nothing -> str
+                     Just op -> drop (length (stringOfOperator op)) str
+
+stringBeginsWithOperator :: String -> Operator -> Bool
+stringBeginsWithOperator str op =
+    let opStr = stringOfOperator op
+    in isPrefixOf opStr str

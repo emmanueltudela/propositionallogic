@@ -1,11 +1,12 @@
 module PropositionalLogic.Variables
 ( Variable(..)
-, SpecialVariable
+, SpecialVariable(..)
+, stringOfSpecialVariable
 ) where
 
 data SpecialVariable = Bot deriving (Eq)
 type Variable = String
 
-stringOfSpecialVariable :: SpecialVariable -> string
+stringOfSpecialVariable :: SpecialVariable -> String
 stringOfSpecialVariable sv =
     case sv of Bot -> "!"
