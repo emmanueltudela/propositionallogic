@@ -12,7 +12,15 @@ import Parenthesis
 
 -- import Debug.Trace (trace)
 
-data Formula = BinaryForm Formula Operator Formula | UnaryForm Operator Formula | Var Variable | Symb SpecialVariable
+strip :: String -> String
+strip str =
+    reverse $ removeStartingSpaces (reverse $ removeStartingSpaces str)
+    where removeStartingSpaces "" = ""
+          removeStartingSpaces (c:t)
+              | c == ' ' = removeStartingSpaces t
+              | otherwise = c:t
+
+data Formula = BinaryForm Formula Operator Formula | UnaryForm Operator Formula | Var Variable | Symb SpecialVariable deriving (Show)
 
 parenthesisFormulaLeft :: Operator -> Formula -> String -> String
 parenthesisFormulaLeft _ (Symb sv) formulaStr = formulaStr
@@ -52,7 +60,7 @@ rootOperator str =
      -
      - str must represent a valid Formula
      -}
-    let strMp = removeOuterParenthesis str
+    let strMp = removeOuterParenthesis (strip str)
         aux acc "" = acc
         aux acc str@(c:t) =
             case (operatorBeginningString str) of
@@ -70,7 +78,7 @@ splittedOnRootOperator str =
      -
      - str must represent a valid Formula
      -}
-    let strMp = removeOuterParenthesis str
+    let strMp = removeOuterParenthesis (strip str)
         rootOp = rootOperator str
         aux acc _ "" = Nothing
         aux acc inParenthesis currentStr@(c:t)
@@ -84,3 +92,24 @@ splittedOnRootOperator str =
                         Just rootOp -> Just [reverse acc, stringWithoutBeginningOperator currentStr]
                         _ -> aux (c:acc) inParenthesis t
     in aux "" 0 str
+
+-- isValidFormulaString :: String -> Bool
+
+formulaOfString :: String -> Formula
+formulaOfString str =
+    {- Must be a valid string Formula
+     -}
+    let strMp = removeOuterParenthesis (strip str)
+        rootOp = rootOperator strMp
+        formulas = splittedOnRootOperator strMp
+    in case formulas of
+           Nothing ->
+               if isSpecialVariableString strMp then
+                   Symb (specialVariableOfString strMp)
+               else
+                   Var strMp
+           Just [leftFormStr, rightFormStr] ->
+               if isUnary rootOp then
+                   UnaryForm rootOp (formulaOfString rightFormStr)
+               else
+                   BinaryForm (formulaOfString leftFormStr) rootOp (formulaOfString rightFormStr)
