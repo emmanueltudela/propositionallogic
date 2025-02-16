@@ -16,6 +16,7 @@ stringOfSpecialVariable :: SpecialVariable -> String
 stringOfSpecialVariable sv =
     case sv of Bot -> "!"
 
-specialVariableOfString :: String -> SpecialVariable
+specialVariableOfString :: String -> Maybe SpecialVariable
 specialVariableOfString str
-    | str == "!" = Bot
+    | str == "!" = Just Bot
+    | otherwise = Nothing

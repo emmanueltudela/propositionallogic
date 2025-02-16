@@ -26,13 +26,14 @@ stringOfOperator op =
                Impl -> "->"
                Eq -> "<->"
 
-operatorOfString :: String -> Operator
+operatorOfString :: String -> Maybe Operator
 operatorOfString str =
-    case str of "~" -> Not
-                "/\\" -> And
-                "\\/" -> Or
-                "->" -> Impl
-                "<->" -> Eq
+    case str of "~" -> Just Not
+                "/\\" -> Just And
+                "\\/" -> Just Or
+                "->" -> Just Impl
+                "<->" -> Just Eq
+                _ -> Nothing
 
 operatorBeginningString :: String -> Maybe Operator
 operatorBeginningString str

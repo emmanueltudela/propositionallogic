@@ -54,29 +54,36 @@ stringOfFormula f =
                       stringF2 = parenthesisFormulaRight op f2 (stringOfFormula f2)
                   in stringF1 ++ (stringOfOperator op) ++ stringF2
 
-rootOperator :: String -> Operator
+rootOperator :: String -> Maybe Operator
 rootOperator str =
     {- Returns the root operator of the given formula.
-     -
-     - str must represent a valid Formula
      -}
     let strMp = removeOuterParenthesis (strip str)
-        aux acc "" = acc
-        aux acc str@(c:t) =
-            case (operatorBeginningString str) of
-                 Nothing -> aux acc t
+        aux acc inParenthesis "" = acc
+        aux acc inParenthesis str@(c:t) =
+            let newInParenthesis
+                    | c == '(' = inParenthesis + 1
+                    | c == ')' = inParenthesis - 1
+                    | otherwise = inParenthesis
+            in case (operatorBeginningString str) of
+                 Nothing -> aux acc newInParenthesis t
                  Just op ->
-                     if op < acc then
-                         aux op t
-                     else
-                         aux acc t
-    in aux (maxBound :: Operator) strMp
+                     case acc of
+                         Nothing ->
+                             if (inParenthesis == 0) then
+                                 aux (Just op) newInParenthesis t
+                             else
+                                 aux acc newInParenthesis t
+                         Just opAcc ->
+                             if (op < opAcc) && (inParenthesis == 0) || (acc == Nothing) then
+                                 aux (Just op) newInParenthesis t
+                             else
+                                 aux acc newInParenthesis t
+    in aux Nothing 0 strMp
 
 splittedOnRootOperator :: String -> Maybe [String]
 splittedOnRootOperator str =
     {- Returns the left and right formula around the root operator
-     -
-     - str must represent a valid Formula
      -}
     let strMp = removeOuterParenthesis (strip str)
         rootOp = rootOperator str
@@ -93,23 +100,42 @@ splittedOnRootOperator str =
                         _ -> aux (c:acc) inParenthesis t
     in aux "" 0 str
 
--- isValidFormulaString :: String -> Bool
+isValidFormulaString :: String -> Bool
+isValidFormulaString "" = False
+isValidFormulaString str =
+    let form = formulaOfString str
+        validParenthesing = isValidParenthesing str
+        aux (Var s) = not (' ' `elem` s || '(' `elem` s || ')' `elem` s) && not (s == "")
+        aux (Symb s) = True
+        aux (BinaryForm f1 op f2) = (aux f1) && (aux f2)
+        aux (UnaryForm op f) = aux f
+    in case form of
+        Nothing -> False
+        Just f -> (aux f) && validParenthesing
 
-formulaOfString :: String -> Formula
+formulaOfString :: String -> Maybe Formula
 formulaOfString str =
-    {- Must be a valid string Formula
-     -}
     let strMp = removeOuterParenthesis (strip str)
         rootOp = rootOperator strMp
         formulas = splittedOnRootOperator strMp
     in case formulas of
            Nothing ->
                if isSpecialVariableString strMp then
-                   Symb (specialVariableOfString strMp)
+                   let Just spV = (specialVariableOfString strMp)
+                   in Just (Symb spV)
                else
-                   Var strMp
+                   Just (Var strMp)
            Just [leftFormStr, rightFormStr] ->
-               if isUnary rootOp then
-                   UnaryForm rootOp (formulaOfString rightFormStr)
-               else
-                   BinaryForm (formulaOfString leftFormStr) rootOp (formulaOfString rightFormStr)
+               case rootOp of
+                   Nothing -> Nothing
+                   Just op ->
+                       if isUnary op then
+                           let rightForm = formulaOfString rightFormStr
+                           in case rightForm of
+                                  Nothing -> Nothing
+                                  Just f -> Just (UnaryForm op f)
+                       else
+                           let (leftForm, rightForm) = (formulaOfString leftFormStr, formulaOfString rightFormStr)
+                           in case (leftForm, rightForm) of
+                                   (Just f1, Just f2) -> Just (BinaryForm f1 op f2)
+                                   (_, _) -> Nothing
