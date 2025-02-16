@@ -105,7 +105,7 @@ isValidFormulaString "" = False
 isValidFormulaString str =
     let form = formulaOfString str
         validParenthesing = isValidParenthesing str
-        aux (Var s) = not (' ' `elem` s || '(' `elem` s || ')' `elem` s) && not (s == "")
+        aux (Var s) = not (' ' `elem` s || '(' `elem` s || ')' `elem` s) && not (s == "") && not (containsSpecialVariable s)
         aux (Symb s) = True
         aux (BinaryForm f1 op f2) = (aux f1) && (aux f2)
         aux (UnaryForm op f) = aux f
