@@ -1,6 +1,9 @@
 module PropositionalLogic.Formulas
 ( Formula(..)
 , stringOfFormula
+, isValidFormula
+, isValidFormulaString
+, formulaOfString
 , splittedOnRootOperator
 ) where
 
