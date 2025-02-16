@@ -23,6 +23,11 @@ stringOfSpecialVariable :: SpecialVariable -> String
 stringOfSpecialVariable sv =
     case sv of Bot -> "False"
 
+specialVariableOfString :: String -> Maybe SpecialVariable
+specialVariableOfString str
+    | str == "False" = Just Bot
+    | otherwise = Nothing
+
 beginsWithSpecialVariable :: String -> SpecialVariable -> Bool
 beginsWithSpecialVariable str sv =
     let spvStr = stringOfSpecialVariable sv
@@ -36,8 +41,3 @@ containsSpecialVariable str =
            True
        else
            containsSpecialVariable t
-
-specialVariableOfString :: String -> Maybe SpecialVariable
-specialVariableOfString str
-    | str == "False" = Just Bot
-    | otherwise = Nothing
